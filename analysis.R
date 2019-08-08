@@ -24,6 +24,14 @@ df2010 <- map_df(us, function(x) {
   get_acs(geography = "tract", variables = vars, state = x, year = 2010, output = "wide")
 })
 
+df_all <- inner_join(df, df2010, by = ("GEOID"))
+
+bike_growth <- df_all %>%
+  mutate(share_2010 = B08006_014E.y / B08006_001E.y, share_2017 = B08006_014E.x / B08006_001E.x, growth = share_2017 - share_2010) %>%
+  filter(share_2010 > 0.03, B08006_001E.x > 500, str_detect(NAME.x, 'Dane')) %>%
+  select(GEOID, NAME.x, B08006_001E.x, share_2010:growth) %>%
+  arrange(desc(growth))
+
 #calculate bike mode share and sort descending
 hi_bike <- df %>%
   filter(B08006_001E > 500) %>%
