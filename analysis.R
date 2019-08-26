@@ -32,6 +32,12 @@ bike_growth <- df_all %>%
   select(GEOID, NAME.x, B08006_001E.x, share_2010:growth) %>%
   arrange(desc(growth))
 
+bike_growth <- df_all %>%
+  mutate(share_2010 = B08006_014E.y / B08006_001E.y, share_2017 = B08006_014E.x / B08006_001E.x, growth = share_2017 - share_2010) %>%
+  filter(share_2010 > 0.03, B08006_001E.x > 500) %>%
+  select(GEOID, NAME.x, B08006_001E.x, share_2010:growth) %>%
+  arrange(desc(growth))
+
 #calculate bike mode share and sort descending
 hi_bike <- df %>%
   filter(B08006_001E > 500) %>%
